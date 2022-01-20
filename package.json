@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/rimac-performance/backend/issues"
   },
-  "homepage": "https://github.com/rimac-performance/backend#readme"
+  "homepage": "https://github.com/rimac-performance/backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "express-validator": "^6.14.0"
+  }
 }
