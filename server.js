@@ -9,10 +9,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.get("/hello", (req, res) => {
-    res.send("hi: " + JSON.stringify(process.env));
+    res.send("hi: " + process.env.DB_USERNAME);
 })
 
 app.listen(port, () => {
     console.log(`Server listening on port: ${port}`)
-    console.log(process.env.db_username)
+    console.log(process.env.DB_USERNAME)
 })
