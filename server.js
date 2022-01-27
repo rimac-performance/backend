@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.get("/hello", (req, res) => {
-    res.send("hi: " + process.env.db_username);
+    res.send("hi: " + process.env);
 })
 
 app.listen(port, () => {
