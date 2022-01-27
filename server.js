@@ -18,7 +18,7 @@ global.pool = new Pool({
 
 app.get("/hello", (req, res) => {
     pool.query('SELECT NOW()', (err, resu) => {
-        res.send(JSON.stringify(resu))
+        res.send("hi: ", JSON.stringify(resu))
         pool.end()
       })
 })
