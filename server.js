@@ -16,7 +16,7 @@ global.pool = new Pool({
     port: process.env.DB_PORT
 })
 
-app.get("/hello", (req, res) => {
+app.get("/api/hello", (req, res) => {
     pool.query('SELECT NOW()', (err, resu) => {
         if (err) {
             res.send(`hi: ${err}`)
@@ -30,7 +30,7 @@ app.get("/hello", (req, res) => {
  * This route logs in a user and returns a json web token
  */
 
-app.post("/user", (req, res) => {
+app.post("/api/user", (req, res) => {
     
 })
 
