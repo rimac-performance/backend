@@ -19,6 +19,9 @@ const userRoute = require("./Routes/UserRoute")
 
 // Routes
 app.use("/users", userRoute);
+app.get("/", (req, res) => {
+    res.send("hi");
+})
 
 const server = app.listen(port, () => {
     console.log(`Server listening on port: ${port}`)
