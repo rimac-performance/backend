@@ -1,39 +1,55 @@
-const express = require('express')
+const express = require("express");
 const app = express()
 const port = 8080
 const cors = require("cors")
 require('dotenv').config()
-const { validationResult } = require('express-validator');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-const { Pool } = require('pg')
-global.pool = new Pool({
-    user: process.env.DB_USERNAME,
-    host: process.env.DB_URL,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT
-})
+const CONSTANTS = require("./Utils/Constants")
+const userRoute = require("./Routes/UserRoute")
 
-app.get("/hello", (req, res) => {
-    pool.query('SELECT NOW()', (err, resu) => {
-        if (err) {
-            res.send(`hi: ${err}`)
-        } else {
-            res.send(`hi: ${JSON.stringify(resu)}`)
-        }
-      })
-})
+// route for handling 404 requests(unavailable routes)
+// app.use((req, res, next) => {
+//     res.status(404).send({
+//         code: CONSTANTS.APP_ERROR_CODE.NOT_FOUND,
+//         description: CONSTANTS.ERROR_DESC.NO_RESOURCE,
+//     });
+// });
 
-/**
- * This route logs in a user and returns a json web token
- */
+// Routes
+app.use("/users", userRoute);
 
-app.post("/user", (req, res) => {
-    
-})
-
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server listening on port: ${port}`)
 })
+
+// // Handle errors on backend
+// const exitHandler = () => {
+//     if (server) {
+//         server.close(() => {
+//             // Eventually replace with logs
+//             console.log("Server closed");
+//             process.exit(1);
+//         });
+//     } else {
+//         process.exit(1);
+//     }
+// };
+
+// const unexpectedErrorHandler = error => {
+//     console.log(error)
+//     exitHandler();
+// };
+
+// process.on("uncaughtException", unexpectedErrorHandler);
+// process.on("unhandledRejection", unexpectedErrorHandler);
+
+// process.on("SIGTERM", () => {
+//     logger.info("SIGTERM received");
+//     if (server) {
+//         server.close();
+//     }
+// });
+
+module.exports = app;
