@@ -58,7 +58,9 @@ function register(firstName, lastName, password, phone, email) {
         }
         // Create User
         try{
-            newUser = await userDAO.createUser(email,password,phone,firstName,lastName);
+            const salt = await bcrypt.genSalt(saltRounds);
+            const hash = await bcrypt.hash(password, salt);
+            newUser = await userDAO.createUser(email,hash,phone,firstName,lastName);
         } catch(error) {
             console.log(`Error creating user at: ${FILE_NAME} ${error}`)
             responseObj.code=CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
