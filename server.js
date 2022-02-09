@@ -18,8 +18,8 @@ const userRoute = require("./Routes/UserRoute")
 // });
 
 // Routes
-app.use("/user", userRoute);
-app.get("/", (req, res) => {
+app.use("/api/user", userRoute);
+app.get("/api", (req, res) => {
     res.send("hi");
 })
 
