@@ -23,7 +23,8 @@ const ERROR_DESC = {
     JWT_UNAUTHORIZED: "UnauthorizedError",
     JWT_EXPIRED: "Expired token provided!",
     MISSING_TOKEN: "No authorization token was found",
-    MISSING_TOKEN_MESSAGE: "missing authorization token"
+    MISSING_TOKEN_MESSAGE: "missing authorization token",
+    INVALID_PHONE_LENGTH: "invalid phone length"
 };
 
 const APP_ERROR_CODE = Object.freeze({

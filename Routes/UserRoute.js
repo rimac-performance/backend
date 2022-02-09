@@ -32,10 +32,11 @@ router.post("/", Validations.validateEmail, Validations.validatePassword, (req, 
 /**
  * This route creates a user account
  */
-router.post("/register", (req, res) => {
+router.post("/register", Validations.validateRegister, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.log(errors)
         return sendErrorResponse(res, errors);
     } else {
         const firstName = req.body.firstName;
@@ -54,5 +55,7 @@ router.post("/register", (req, res) => {
         })
     }
 })
+
+router.post("/forgot")
 
 module.exports = router;

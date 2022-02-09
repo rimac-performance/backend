@@ -18,7 +18,7 @@ const userRoute = require("./Routes/UserRoute")
 // });
 
 // Routes
-app.use("/users", userRoute);
+app.use("/user", userRoute);
 app.get("/", (req, res) => {
     res.send("hi");
 })
