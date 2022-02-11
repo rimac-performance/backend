@@ -24,7 +24,8 @@ const ERROR_DESC = {
     JWT_EXPIRED: "Expired token provided!",
     MISSING_TOKEN: "No authorization token was found",
     MISSING_TOKEN_MESSAGE: "missing authorization token",
-    INVALID_PHONE_LENGTH: "invalid phone length"
+    INVALID_PHONE_LENGTH: "invalid phone length",
+    EMAIL: "There was an error sending the email!",
 };
 
 const APP_ERROR_CODE = Object.freeze({

@@ -56,6 +56,23 @@ router.post("/register", Validations.validateRegister, (req, res) => {
     }
 })
 
-router.post("/forgot")
+router.get("/forgot", Validations.validateEmail, (req, res) => {
+    const responseObj = {};
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors)
+        return sendErrorResponse(res, errors);
+    } else {
+        const email = req.body.email;
+        userService.forgot(email).then(result => {
+            console.log(`Success sending reset link at: ${FILE_NAME}`);
+            return res.send(result);
+        }).catch(err => {
+            console.log(`Error sending reset link at: ${FILE_NAME} ${err}`);
+            const errorInfo = ErrorUtils.getErrorInfo(err.code);
+            return ErrorUtils.sendResponse(res, responseObj, errorInfo);
+        })
+    }
+})
 
 module.exports = router;

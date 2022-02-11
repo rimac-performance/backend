@@ -10,10 +10,10 @@ const FILE_NAME = "userDAO.js"
  * @param {*} password A user's password
  * @returns 
  */
-function getUser(email, password) {
+function getUser(email) {
     return new Promise(async (resolve, reject) => {
-        const values = [email, password];
-        const query = 'SELECT * FROM public.user WHERE email=$1 and pswd=$2;';
+        const values = [email];
+        const query = 'SELECT * FROM public.user WHERE email=$1;';
         try {
             return resolve(await pool.query(query, values))
         } catch (error) {

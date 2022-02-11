@@ -18,21 +18,38 @@ function login(email, password) {
         const responseObj = {};
         let user;
         try {
-            const salt = await bcrypt.genSalt(saltRounds);
-            const hash = await bcrypt.hash(password, salt);
-            user = await userDAO.getUser(email, hash);
+            user = await userDAO.getUser(email);
         } catch (err) {
             console.log(`Error in getting user at: ${FILE_NAME}`)
             responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR
             return reject(responseObj)
         }
+        console.log(user)
         if (user.rows.length == 0) {
             console.log(`User not found at: ${FILE_NAME}`);
             responseObj.code = CONSTANTS.APP_ERROR_CODE.NOT_FOUND;
             return reject(responseObj);
         } else {
-            console.log(`Success in login at: ${FILE_NAME}`)
-            return resolve(user.rows[0]);
+            try {
+                const samePassword = await bcrypt.compare(password, user.rows[0].pswd)
+                if (samePassword) {
+                    console.log(`Success in login at: ${FILE_NAME}`)
+                    user = user.rows[0]
+                    return resolve({
+                        token: utils.generateJWT(user.user_id, user.email, user.phone,
+                            user.first_name, user.last_name, user.user_role)
+                    });
+                } else {
+                    console.log(`Incrorrect email or password in login at: ${FILE_NAME}`);
+                    responseObj.code = CONSTANTS.APP_ERROR_CODE.INVALID_EMAIL_OR_PASSWORD
+                    return reject(responseObj)
+                }
+            } catch (error) {
+                console.log(`Error in getting user at: ${FILE_NAME}`)
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR
+                return reject(responseObj)
+            }
+
         }
     })
 }
@@ -40,7 +57,7 @@ function login(email, password) {
 function register(firstName, lastName, password, phone, email) {
     return new Promise(async (resolve, reject) => {
         // check if user exists
-        responseObj={}
+        responseObj = {}
         let user;
         let newUser;
         // Check if user exists
@@ -48,32 +65,71 @@ function register(firstName, lastName, password, phone, email) {
             user = await userDAO.checkUserExists(email);
             if (user) {
                 console.log(`Error user already exists at: ${FILE_NAME}`)
-                responseObj.code=CONSTANTS.APP_ERROR_CODE.USER_EXISTS;
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.USER_EXISTS;
                 return reject(responseObj)
             }
         } catch (error) {
             console.log(`Error checking user at: ${FILE_NAME} ${error}`)
-            responseObj.code=CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
             return reject(responseObj)
         }
         // Create User
-        try{
+        try {
             const salt = await bcrypt.genSalt(saltRounds);
             const hash = await bcrypt.hash(password, salt);
-            newUser = await userDAO.createUser(email,hash,phone,firstName,lastName);
-        } catch(error) {
+            console.log(hash)
+            newUser = await userDAO.createUser(email, hash, phone, firstName, lastName);
+        } catch (error) {
             console.log(`Error creating user at: ${FILE_NAME} ${error}`)
-            responseObj.code=CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
             return reject(responseObj)
         }
-        newUser=newUser.rows[0];
+        newUser = newUser.rows[0];
         console.log(newUser)
-        return resolve({token : utils.generateJWT(newUser.user_id, newUser.email, newUser.phone, 
-            newUser.first_name, newUser.last_name, newUser.user_role)});
+        return resolve({
+            token: utils.generateJWT(newUser.user_id, newUser.email, newUser.phone,
+                newUser.first_name, newUser.last_name, newUser.user_role)
+        });
     });
+}
+
+/**
+ * This function will send a reset link to the user's email.
+ * 
+ * @param {*} email 
+ * @returns 
+ */
+function forgot(email) {
+    return new Promise(async (resolve, reject) => {
+        responseObj = {}
+        let user;
+        // Check if user exists
+        try {
+            user = await userDAO.checkUserExists(email);
+            if (!user) {
+                console.log(`User doesn't exist at: ${FILE_NAME}`)
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.NOT_FOUND;
+                return reject(responseObj)
+            }
+        } catch (error) {
+            console.log(`Error checking user at: ${FILE_NAME} ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
+        }
+        // send email
+        try {
+            await utils.mail(email, "Reset Password", "hi")
+        } catch (error) {
+            console.log(`Error sending email at: ${FILE_NAME} ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.EMAIL;
+            return reject(responseObj)
+        }
+        return resolve({ success: CONSTANTS.ERROR_DESC.SUCCESS })
+    })
 }
 
 module.exports = {
     login,
-    register
+    register,
+    forgot
 }
