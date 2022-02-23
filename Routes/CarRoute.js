@@ -8,7 +8,9 @@ const Validations = require("../Utils/Validations");
 const authenticateJWT = require("../Utils/Utils").authenticateJWT;
 const carService = require("../Services/CarService")
 
-
+/**
+ * This route creates a car under a user
+ */
 router.post("/", authenticateJWT, Validations.validateUser, Validations.validateCarRegister, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
@@ -54,7 +56,7 @@ router.get("/", authenticateJWT, Validations.validateViewCars, (req, res) => {
     }
 })
 
-router.post("/engineer", authenticateJWT, Validations.validateCarID, (req, res) => {
+router.post("/admin", authenticateJWT, Validations.validateCarID, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

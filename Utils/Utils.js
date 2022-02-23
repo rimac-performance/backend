@@ -13,8 +13,8 @@ const CONSTANTS = require("./Constants");
  */
 function generateJWT(userID, email, phone, firstName, lastName, userRole) {
     return jwt.sign({
-        userID: userID, email: email, phone: phone, firstName: firstName,
-        lastName: lastName, userRole: userRole
+        user_id: userID, email: email, phone: phone, first_name: firstName,
+        last_name: lastName, user_role: userRole
     }, process.env.JWT_SECRET)
 }
 
