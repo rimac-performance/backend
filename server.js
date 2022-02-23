@@ -8,6 +8,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 const CONSTANTS = require("./Utils/Constants")
 const userRoute = require("./Routes/UserRoute")
+const carRoute = require("./Routes/CarRoute")
 
 // route for handling 404 requests(unavailable routes)
 // app.use((req, res, next) => {
@@ -19,9 +20,7 @@ const userRoute = require("./Routes/UserRoute")
 
 // Routes
 app.use("/api/user", userRoute);
-app.get("/api", (req, res) => {
-    res.send("hi");
-})
+app.use("/api/car", carRoute);
 
 const server = app.listen(port, () => {
     console.log(`Server listening on port: ${port}`)

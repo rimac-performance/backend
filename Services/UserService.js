@@ -4,6 +4,7 @@ const FILE_NAME = "UserService.js";
 const CONSTANTS = require("../Utils/Constants");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const shortid = require("shortid")
 
 /**
  * This function checks to see if a user exists given an email and password
@@ -24,7 +25,6 @@ function login(email, password) {
             responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR
             return reject(responseObj)
         }
-        console.log(user)
         if (user.rows.length == 0) {
             console.log(`User not found at: ${FILE_NAME}`);
             responseObj.code = CONSTANTS.APP_ERROR_CODE.NOT_FOUND;
@@ -54,6 +54,16 @@ function login(email, password) {
     })
 }
 
+/**
+ * This function creates a user in the db as a car owner
+ * 
+ * @param {*} firstName 
+ * @param {*} lastName 
+ * @param {*} password 
+ * @param {*} phone 
+ * @param {*} email 
+ * @returns 
+ */
 function register(firstName, lastName, password, phone, email) {
     return new Promise(async (resolve, reject) => {
         // check if user exists
@@ -103,6 +113,7 @@ function forgot(email) {
     return new Promise(async (resolve, reject) => {
         responseObj = {}
         let user;
+        let resetCode;
         // Check if user exists
         try {
             user = await userDAO.checkUserExists(email);
@@ -116,9 +127,18 @@ function forgot(email) {
             responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
             return reject(responseObj)
         }
+        // create code and save in the db
+        try {
+            resetCode = shortid.generate();
+            await userDAO.updateResetPassword(resetCode, email)
+        } catch(error) {
+            console.log(`Error setting reset code at: ${FILE_NAME} ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
+        }
         // send email
         try {
-            await utils.mail(email, "Reset Password", "hi")
+            await utils.mail(email, "Reset Password", resetCode)
         } catch (error) {
             console.log(`Error sending email at: ${FILE_NAME} ${error}`)
             responseObj.code = CONSTANTS.APP_ERROR_CODE.EMAIL;
@@ -128,8 +148,49 @@ function forgot(email) {
     })
 }
 
+function viewUsers(userID, role) {
+    return new Promise(async (resolve, reject) => {
+        const responseObj = {};
+        // if user is car owner only return them
+        if (role == 1) {
+            try {
+                const user = await userDAO.getUserByUserID(userID)
+                return resolve(user.rows)
+            } catch (error) {
+                console.log(`Error viewing user at: ${FILE_NAME} ${error}`)
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+                return reject(responseObj)
+            }
+        } else {
+            try {
+                const users = await userDAO.getAllUsers();
+                return resolve(users.rows);
+            } catch (error) {
+                console.log(`Error viewing users at: ${FILE_NAME} ${error}`)
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+                return reject(responseObj)
+            }
+        }
+    })
+}
+
+function testInsert(password) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const salt = await bcrypt.genSalt(saltRounds);
+            const hash = await bcrypt.hash(password, salt);
+            await userDAO.testInsert(hash)
+            return resolve({success: "success"})
+        } catch(error) {
+            return reject(error)
+        }
+    })
+}
+
 module.exports = {
     login,
     register,
-    forgot
+    forgot,
+    viewUsers,
+    testInsert
 }

@@ -4,7 +4,8 @@
   "description": "Backend code for the Rimac Project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,8 @@
     "express-validator": "^6.14.0",
     "jsonwebtoken": "^8.5.1",
     "nodemailer": "^6.7.2",
-    "pg": "^8.7.1"
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.1",
+    "shortid": "^2.2.16"
   }
 }

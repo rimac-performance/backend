@@ -41,12 +41,17 @@ function createUser(email, password, phone, firstName, lastName) {
         try {
             return resolve(await pool.query(query, values))
         } catch (error) {
-            console.log(`Error in getting user in ${FILE_NAME}: ${error}`)
+            console.log(`Error in creating user in ${FILE_NAME}: ${error}`)
             return reject(error);
         }
     })
 }
 
+/**
+ * This function checks if an email exists in the db
+ * @param {*} email 
+ * @returns 
+ */
 function checkUserExists(email) {
     return new Promise(async (resolve, reject) => {
         const values = [email];
@@ -59,15 +64,84 @@ function checkUserExists(email) {
                 return resolve(true)
             }
         } catch (error) {
+            console.log(`Error in checking user exists in ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
+/**
+ * This function updates the password 
+ * @param {*} resetCode 
+ * @param {*} email 
+ * @returns 
+ */
+function updateResetPassword(resetCode, email) {
+    return new Promise(async (resolve, reject) => {
+        const values = [resetCode, email];
+        const query = `UPDATE public.user SET pswd_reset = $1 WHERE email = $2;`;
+        try {
+            return resolve(await pool.query(query, values))
+        } catch (error) {
+            console.log(`Error in updating user in ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    });
+}
+
+/**
+ * This function returns all of the users in the user table
+ * @returns 
+ */
+function getAllUsers() {
+    return new Promise(async (resolve, reject) => {
+        const query = 'SELECT user_id, email, phone, first_name, last_name, user_role FROM public.user;'
+        try {
+            return resolve(await pool.query(query))
+        } catch (error) {
+            console.log(`Error in getting all users in ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
+/**
+ * This function returns a user by their userID
+ * @param {*} userID 
+ * @returns 
+ */
+function getUserByUserID(userID) {
+    return new Promise(async (resolve, reject) => {
+        const values = [userID];
+        const query = `SELECT user_id, email, phone, first_name, last_name, user_role FROM public.user WHERE user_id=$1;`;
+        try {
+            return resolve(await pool.query(query, values))
+        } catch (error) {
             console.log(`Error in getting user in ${FILE_NAME}: ${error}`)
             return reject(error);
         }
     })
 }
 
+function testInsert(hash) {
+    return new Promise(async (resolve, reject ) => {
+        const values = [hash];
+        const query = `UPDATE public.user SET pswd=$1 where email='bdeboy1@google.nl';`
+        try {
+            return resolve(await pool.query(query, values))
+        } catch (error) {
+            console.log(`Error in getting user in ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
 
 module.exports = {
     getUser,
     createUser,
-    checkUserExists
+    checkUserExists,
+    updateResetPassword,
+    getAllUsers,
+    getUserByUserID,
+    testInsert
 }

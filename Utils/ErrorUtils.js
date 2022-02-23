@@ -181,6 +181,14 @@ const ERROR_LOOKUP_TABLE = new Map([
             CONSTANTS.ERROR_CODE.BAD_REQUEST,
         ),
     ],
+    [
+        CONSTANTS.APP_ERROR_CODE.CAR_EXISTS,
+        new ErrorInfo(
+            CONSTANTS.APP_ERROR_CODE.CAR_EXISTS,
+            CONSTANTS.ERROR_DESC.CAR_ALREADY_EXISTS,
+            CONSTANTS.ERROR_CODE.CONFLICT,
+        ),
+    ],
 ]);
 
 /**

@@ -16,16 +16,18 @@ const ERROR_DESC = {
         "password should be combination of one uppercase , one lower case, one special char, one digit and min 8 , max 20 char long",
     INVALID_EMAIL: "email is invalid!",
     USER_ALREADY_EXISTS: "user already exists!",
+    CAR_ALREADY_EXISTS: "car already exists!",
     DUPLICATE: "duplicate entry",
     TOKEN_EXPIRED: "token expired",
     PASSWORD_RESET: "reset your password",
     ACTIVATE_ACCOUNT: "activate your account",
-    JWT_UNAUTHORIZED: "UnauthorizedError",
+    JWT_UNAUTHORIZED: "Unauthorized Error",
     JWT_EXPIRED: "Expired token provided!",
     MISSING_TOKEN: "No authorization token was found",
     MISSING_TOKEN_MESSAGE: "missing authorization token",
     INVALID_PHONE_LENGTH: "invalid phone length",
     EMAIL: "There was an error sending the email!",
+    INVALID_YEAR: "Year of car must be between 2009-9999!"
 };
 
 const APP_ERROR_CODE = Object.freeze({
@@ -48,6 +50,8 @@ const APP_ERROR_CODE = Object.freeze({
     TIME: 17,
     FILE_TYPE: 18,
     FILE_SIZE: 19,
+    INVALID_TOKEN: 20,
+    CAR_EXISTS: 20,
     UNKNOWN_ERROR: -1,
 });
 
