@@ -6,9 +6,8 @@ const CONSTANTS = require("./Constants");
 
 /**
  * 
- *  This function creates a JWT based off of the secret and the user's email
+ *  This function creates a JWT based off of the user's profile
  * 
- * @param {*} email user's email
  * @returns 
  */
 function generateJWT(userID, email, phone, firstName, lastName, userRole) {

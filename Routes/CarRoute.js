@@ -56,6 +56,9 @@ router.get("/", authenticateJWT, Validations.validateViewCars, (req, res) => {
     }
 })
 
+/**
+ * This route will map an engineer/admin to a car
+ */
 router.post("/admin", authenticateJWT, Validations.validateCarID, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);

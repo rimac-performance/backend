@@ -19,12 +19,12 @@ router.post("/", Validations.validateEmail, Validations.validatePassword, (req, 
         return sendErrorResponse(res, errors);
     } else {
         const email = req.body.email;
-        const password = req.body.password;
+        const password = req.body.pswd;
         userService.login(email, password).then(result => {
             console.log(`Success logging user in at: ${FILE_NAME}`);
             return res.send(result);
         }).catch(err => {
-            console.log(`Error logging in user at: ${FILE_NAME} ${err}`);
+            console.log(`Error logging in user at: ${FILE_NAME} ${JSON.stringify(err)}`);
             const errorInfo = ErrorUtils.getErrorInfo(err.code);
             return ErrorUtils.sendResponse(res, responseObj, errorInfo);
         })
