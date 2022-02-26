@@ -20,11 +20,11 @@ function registerCar(userID, vin, model, year, color) {
         const responseObj = {}
         try {
             const carExists = await carDAO.checkCarExists(vin);
-            if(carExists) {
-                responseObj.code=CONSTANTS.APP_ERROR_CODE.CAR_EXISTS;
+            if (carExists) {
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.CAR_EXISTS;
                 return reject(responseObj)
             }
-        } catch(error) {
+        } catch (error) {
             console.log(`Error checking if car exists in ${FILE_NAME}: ${error}`)
             responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR
             return reject(responseObj)
@@ -43,7 +43,7 @@ function registerCar(userID, vin, model, year, color) {
 }
 
 function mapCarToEngineer(userID, carID, role) {
-    
+
 }
 
 /**
@@ -56,14 +56,25 @@ function mapCarToEngineer(userID, carID, role) {
  */
 function viewCars(userID, jwtUserID, role) {
     return new Promise(async (resolve, reject) => {
-        const responseObj={};
+        const responseObj = {};
         if (userID == undefined || userID == jwtUserID) {
+            // ***NOTE: check if the user is an engineer
+            if (role == 2) {
+                try {
+                    const cars = await carDAO.getCarsByUserIDForEngineer(jwtUserID);
+                    return resolve(cars.rows);
+                } catch (error) {
+                    console.log(`Error viewing car in ${FILE_NAME}: ${error}`)
+                    responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR
+                    return reject(responseObj)
+                }
+            }
             // Assume the user wants to view his own cars
             try {
                 const cars = await carDAO.getCarsByUserID(jwtUserID);
                 return resolve(cars.rows);
             } catch (error) {
-                console.log(`Error getting car in ${FILE_NAME}: ${error}`)
+                console.log(`Error viewing car in ${FILE_NAME}: ${error}`)
                 responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR
                 return reject(responseObj)
             }

@@ -148,6 +148,14 @@ function forgot(email) {
     })
 }
 
+/**
+ * This will return a list of users if the user is an engineer/admin,
+ * or return the user if the user is a car owner
+ * 
+ * @param {*} userID 
+ * @param {*} role 
+ * @returns 
+ */
 function viewUsers(userID, role) {
     return new Promise(async (resolve, reject) => {
         const responseObj = {};

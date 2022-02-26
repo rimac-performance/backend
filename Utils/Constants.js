@@ -27,7 +27,8 @@ const ERROR_DESC = {
     MISSING_TOKEN_MESSAGE: "missing authorization token",
     INVALID_PHONE_LENGTH: "invalid phone length",
     EMAIL: "There was an error sending the email!",
-    INVALID_YEAR: "Year of car must be between 2009-9999!"
+    INVALID_YEAR: "Year of car must be between 2009-9999!",
+    UNAUTHORIZED: "not authorized"
 };
 
 const APP_ERROR_CODE = Object.freeze({
@@ -67,8 +68,11 @@ const ERROR_CODE = {
     CONFLICT: 409
 };
 
+const runColumns = ['mean_BCU_F_ST:BCU_F_wipers_speed_ST', 'mean_BFI_RL_temp_1:BFI_temp_sw_max', 'mean_BFI_RL_temp_2:BFI_temp_motor_1', 'mean_BFI_RL_temp_2:BFI_temp_motor_2', 'mean_BFI_RL_temp_2:BFI_temp_motor_3', 'mean_BFI_RR_temp_1:BFI_temp_sw_max', 'mean_BFI_RR_temp_2:BFI_temp_motor_1', 'mean_BFI_RR_temp_2:BFI_temp_motor_2', 'mean_BFI_RR_temp_2:BFI_temp_motor_3', 'mean_CCU_F_ST:CCU_F_AC_ON_ST', 'mean_CCU_F_ST:CCU_F_AC_fan_speed_ST', 'mean_CCU_F_temp_1:CCU_F_ambient_temp', 'mean_CCU_F_temp_1:CCU_F_evaporator_temp', 'mean_CCU_F_temp_1:CCU_F_heating_inlet_temp', 'mean_CCU_F_temp_1:CCU_F_heating_outlet_temp', 'mean_CCU_F_temp_1:CCU_F_interior_temp', 'mean_CCU_R_temp_1:CCU_R_batt_coolant_in_temp', 'mean_CCU_R_temp_1:CCU_R_batt_coolant_out_temp', 'mean_HPI_FL_inverter_temp:HPI_temp_IGBT1', 'mean_HPI_FL_inverter_temp:HPI_temp_IGBT2', 'mean_HPI_FL_inverter_temp:HPI_temp_IGBT3', 'mean_HPI_FL_phase_curr_motor_temp:HPI_temp_motor1', 'mean_HPI_FL_phase_curr_motor_temp:HPI_temp_motor2', 'mean_HPI_FR_inverter_temp:HPI_temp_IGBT1', 'mean_HPI_FR_inverter_temp:HPI_temp_IGBT2', 'mean_HPI_FR_inverter_temp:HPI_temp_IGBT3', 'mean_HPI_FR_phase_curr_motor_temp:HPI_temp_motor1', 'mean_HPI_FR_phase_curr_motor_temp:HPI_temp_motor2', 'mean_PCU_IVI_FB_2:PCU_vehicle_range', 'mean_PCU_power_LIM:PCU_drive_power_LIM', 'mean_PCU_power_LIM:PCU_drive_power_available', 'mean_PCU_power_LIM:PCU_regen_power_LIM', 'mean_PDU_BMS_cell_min_max_vals:PDU_cell_temp_max', 'mean_PDU_BMS_cell_min_max_vals:PDU_cell_temp_min', 'mean_PDU_BMS_cell_min_max_vals:PDU_cell_voltage_max', 'mean_PDU_BMS_cell_min_max_vals:PDU_cell_voltage_min', 'mean_PDU_HV_LV_status:PDU_HV_battery_SOC', 'mean_PDU_HV_LV_status:PDU_HV_battery_SOH', 'mean_PDU_HV_battery_performance:PDU_HV_battery_current', 'mean_PDU_HV_battery_performance:PDU_HV_battery_voltage', 'mean_PDU_HV_consumptions:PDU_HV_batt_consumption_charged', 'mean_PDU_HV_consumptions:PDU_HV_batt_consumption_regen', 'mean_PDU_HV_consumptions:PDU_HV_batt_consumption_total', 'mean_PDU_HV_energy:PDU_HV_battery_SOE', 'mean_PDU_HV_energy:PDU_HV_battery_energy_available', 'mean_SAFETY_PCU_ST:PCU_vehicle_output_power', 'mean_SAFETY_PCU_knobs_ST:PCU_PRND_mode_ST', 'mean_SAFETY_PCU_vehicle_ST:PCU_accelerator_pedal', 'mean_SAFETY_PCU_vehicle_ST:PCU_vehicle_mileage', 'mean_SAFETY_PCU_vehicle_ST:PCU_vehicle_speed', 'mean_SAFETY_VCU_vehicle_ST:VCU_vehicle_ST', 'mean_SCU_PSG_ST:SCU_PSG_seat_occupied', 'mean_gps:pos_altitude', 'mean_gps:pos_heading', 'mean_gps:pos_latitude', 'mean_gps:pos_longitude']
+
 module.exports = {
     ERROR_DESC,
     APP_ERROR_CODE,
-    ERROR_CODE
+    ERROR_CODE,
+    runColumns
 }

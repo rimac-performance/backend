@@ -126,7 +126,7 @@ function getUserByUserID(userID) {
 function testInsert(hash) {
     return new Promise(async (resolve, reject ) => {
         const values = [hash];
-        const query = `UPDATE public.user SET pswd=$1 where email='bdeboy1@google.nl';`
+        const query = `UPDATE public.user SET pswd=$1 where email='ghuckin0@yahoo.co.jp';`
         try {
             return resolve(await pool.query(query, values))
         } catch (error) {

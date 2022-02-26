@@ -46,7 +46,6 @@ router.post("/register", Validations.validateRegister, (req, res) => {
         const password = req.body.pswd;
         const phone = req.body.phone;
         const email = req.body.email;
-        console.log(password)
         userService.register(firstName, lastName, password, phone, email).then(result => {
             console.log(`Success creating user in at: ${FILE_NAME}`);
             return res.send(result);

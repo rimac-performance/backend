@@ -9,6 +9,7 @@ app.use(cors());
 const CONSTANTS = require("./Utils/Constants")
 const userRoute = require("./Routes/UserRoute")
 const carRoute = require("./Routes/CarRoute")
+const runRoute = require("./Routes/RunRoute")
 
 // route for handling 404 requests(unavailable routes)
 // app.use((req, res, next) => {
@@ -21,6 +22,7 @@ const carRoute = require("./Routes/CarRoute")
 // Routes
 app.use("/api/user", userRoute);
 app.use("/api/car", carRoute);
+app.use("/api/run", runRoute)
 
 const server = app.listen(port, () => {
     console.log(`Server listening on port: ${port}`)

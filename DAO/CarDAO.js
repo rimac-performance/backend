@@ -42,10 +42,15 @@ function createCarForEngineer(userID, carID) {
     })
 }
 
+/**
+ * This function checks to see if a car exists by the vin numer
+ * @param {*} vin 
+ * @returns 
+ */
 function checkCarExists(vin) {
     return new Promise(async (resolve, reject) => {
         const values = [vin];
-        const query = `SELECT * FROM public.car WHERE vin=$1`;
+        const query = `SELECT * FROM public.car WHERE vin=$1;`;
         try {
             const car = await pool.query(query, values);
             if (car.rows.length == 0) {
@@ -60,10 +65,38 @@ function checkCarExists(vin) {
     })
 }
 
+/**
+ * This function checks to see if a car exists by the car_id
+ * @param {*} vin 
+ * @returns 
+ */
+function checkCarExistsByCarID(carID) {
+    return new Promise(async (resolve, reject) => {
+        const values = [carID];
+        const query = `SELECT * FROM public.car WHERE car_id=$1;`;
+        try {
+            const car = await pool.query(query, values);
+            if (car.rows.length == 0) {
+                return resolve(false)
+            } else {
+                return resolve(true)
+            }
+        } catch (error) {
+            console.log(`Error in checking car exists ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
+/**
+ * This function returns a list of cars by a userID
+ * @param {*} userID 
+ * @returns 
+ */
 function getCarsByUserID(userID) {
     return new Promise(async (resolve, reject) => {
         const values = [userID];
-        const query = `SELECT car.* FROM car JOIN car_has_owner on car.car_id = car_has_owner.car_id WHERE 
+        const query = `SELECT car.* FROM car JOIN car_has_owner on car.user_id = car_has_owner.user_id WHERE 
             car_has_owner.user_id=$1`;
         try {
             return resolve(await pool.query(query, values));
@@ -74,9 +107,55 @@ function getCarsByUserID(userID) {
     });
 }
 
+/**
+ * This function returns a list of cars by a userID
+ * @param {*} userID 
+ * @returns 
+ */
+ function getCarsByUserIDForEngineer(userID) {
+    return new Promise(async (resolve, reject) => {
+        const values = [userID];
+        const query = `SELECT car.* FROM car JOIN car_has_engineer on car.user_id = car_has_engineer.user_id WHERE 
+            car_has_engineer.user_id=$1`;
+        try {
+            return resolve(await pool.query(query, values));
+        } catch (error) {
+            console.log(`Error in checking car exists ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    });
+}
+
+/**
+ * This function checks if a car and a user exists
+ * @param {*} carID 
+ * @param {*} userID 
+ * @returns 
+ */
+function checkCarMapsToUser(carID, userID) {
+    return new Promise(async (resolve, reject) => {
+        const values = [carID, userID];
+        const query = `SELECT * FROM car_has_owner WHERE car_id=$1 AND user_id=$2;`; 
+        try {
+            const map = await pool.query(query, values);
+            if (map.rows.length == 0) {
+                return resolve(false)
+            } else {
+                return resolve(true)
+            }
+        } catch(error) {
+            console.log(`Error in checking car exists ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
 module.exports = {
     createCar,
     checkCarExists,
+    checkCarExistsByCarID,
     createCar,
-    getCarsByUserID
+    getCarsByUserID,
+    getCarsByUserIDForEngineer,
+    checkCarMapsToUser
 }
