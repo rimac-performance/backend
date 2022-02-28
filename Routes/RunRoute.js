@@ -11,17 +11,17 @@ const runService = require("../Services/RunService")
 /**
  * This route gets run data from a car
  */
-router.post("/view", authenticateJWT, Validations.validateViewRun, (req, res) => {
+router.post("/view", Validations.validateViewRun, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return sendErrorResponse(res, errors);
     } else {
-        const jwtUserID = req.body.user.user_id;
-        const role = req.body.user.user_role;
+        //const jwtUserID = req.body.user.user_id;
+        //const role = req.body.user.user_role;
         const runID = req.body.run_id;
         const fields = req.body.fields;
-        runService.viewRuns(jwtUserID, role,runID,fields).then(result => {
+        runService.viewRuns(runID,fields).then(result => {
             console.log(`Success viewing run at ${FILE_NAME}`)
             return res.send(result);
         }).catch(err => {

@@ -133,6 +133,8 @@ const validateViewRun = [
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .trim().escape()
+        .isUUID()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
         .isString()
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
         .not().isEmpty()

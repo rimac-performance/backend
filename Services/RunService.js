@@ -8,7 +8,7 @@ const runDAO = require("../DAO/RunDAO");
  * This function returns the run of a car as long as the request is valid
  * @returns 
  */
-function viewRuns(jwtUserID, role, runID, fields) {
+function viewRuns(runID, fields) {
     return new Promise(async(resolve, reject) => {
         const responseObj={}
         // First check if car exists
@@ -24,36 +24,44 @@ function viewRuns(jwtUserID, role, runID, fields) {
             return reject(responseObj)
         }
         // Check if user is authorized to view run
-        if (role == 2 || role == 3) {
-            try {
-                const runs = await runDAO.getRunByRunID(runID, fields);
-                return resolve(runs.rows)
-            } catch(error) {
-                console.log(`Error getting run at ${FILE_NAME}: ${error}`)
-                responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
-                return reject(responseObj)
-            }
-        } else {
-            // Check if the car owner is allowed to view the run
-            try {
-                if (!await runDAO.checkCanViewRun(jwtUserID, runID)) {
-                    console.log(`User unauthorized to view run at ${FILE_NAME}`)
-                    responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED;
-                    return reject(responseObj)
-                }
-            } catch(error) {
-                console.log(`Error checking if the user is authorized to view run at ${FILE_NAME}: ${error}`)
-                responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
-                return reject(responseObj)
-            }
-            try {
-                const runs = await runDAO.getRunByRunID(runID, fields);
-                return resolve(runs.rows)
-            } catch(error) {
-                console.log(`Error getting run at ${FILE_NAME}: ${error}`)
-                responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
-                return reject(responseObj)
-            }
+        // if (role == 2 || role == 3) {
+        //     try {
+        //         const runs = await runDAO.getRunByRunID(runID, fields);
+        //         return resolve(runs.rows)
+        //     } catch(error) {
+        //         console.log(`Error getting run at ${FILE_NAME}: ${error}`)
+        //         responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+        //         return reject(responseObj)
+        //     }
+        // } else {
+        //     // Check if the car owner is allowed to view the run
+        //     try {
+        //         if (!await runDAO.checkCanViewRun(jwtUserID, runID)) {
+        //             console.log(`User unauthorized to view run at ${FILE_NAME}`)
+        //             responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED;
+        //             return reject(responseObj)
+        //         }
+        //     } catch(error) {
+        //         console.log(`Error checking if the user is authorized to view run at ${FILE_NAME}: ${error}`)
+        //         responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+        //         return reject(responseObj)
+        //     }
+        //     try {
+        //         const runs = await runDAO.getRunByRunID(runID, fields);
+        //         return resolve(runs.rows)
+        //     } catch(error) {
+        //         console.log(`Error getting run at ${FILE_NAME}: ${error}`)
+        //         responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+        //         return reject(responseObj)
+        //     }
+        // }
+        try {
+            const runs = await runDAO.getRunByRunID(runID, fields);
+            return resolve(runs.rows)
+        } catch(error) {
+            console.log(`Error getting run at ${FILE_NAME}: ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
         }
     })
 }
