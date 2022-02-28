@@ -37,7 +37,7 @@ function viewRuns(jwtUserID, role, runID, fields) {
             // Check if the car owner is allowed to view the run
             try {
                 if (!await runDAO.checkCanViewRun(jwtUserID, runID)) {
-                    console.log(`User unauthorized to view run at ${FILE_NAME}: ${error}`)
+                    console.log(`User unauthorized to view run at ${FILE_NAME}`)
                     responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED;
                     return reject(responseObj)
                 }
@@ -74,7 +74,7 @@ function viewAllRuns(userID, carID, role) {
                 const runs = await runDAO.getAllRunsByCarID(carID);
                 return resolve(runs.rows);
             } catch(error) {
-                console.log(`Error checking if car mapss to user at ${FILE_NAME}: ${error}`)
+                console.log(`Error checking if car maps to user at ${FILE_NAME}: ${error}`)
                 responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
                 return reject(responseObj)
             }
