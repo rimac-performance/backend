@@ -96,8 +96,8 @@ function checkCarExistsByCarID(carID) {
 function getCarsByUserID(userID) {
     return new Promise(async (resolve, reject) => {
         const values = [userID];
-        const query = `SELECT car.* FROM car JOIN car_has_owner on car.user_id = car_has_owner.user_id WHERE 
-            car_has_owner.user_id=$1`;
+        const query = `SELECT car.* FROM car JOIN car_has_owner on car.car_id = car_has_owner.car_id JOIN public.user ON
+        car_has_owner.user_id = public.user.user_id WHERE public.user.user_id=$1`;
         try {
             return resolve(await pool.query(query, values));
         } catch (error) {
