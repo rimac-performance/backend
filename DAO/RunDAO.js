@@ -46,7 +46,7 @@ function getRunByRunID(runID, fields) {
 function getAllRunsByCarID(carID){
     return new Promise(async (resolve, reject) => {
         const values = [carID]
-        const query = `SELECT * FROM car WHERE car_id = $1;`
+        const query = `SELECT * FROM run WHERE car_id = $1;`
         try {
             return resolve(await pool.query(query, values));
         } catch(error) {
