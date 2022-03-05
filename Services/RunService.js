@@ -155,9 +155,9 @@ function uploadRun(userID, carID, runName, file) {
                     if(i==0){
                         formattedRow[i] = "'" + formattedRow[i].slice(0, 23).replace('T', ' ') + "'"
                     }
-                    if(formattedRow[i] === '') {
-                        formattedRow[i] = 'NULL'
-                    }
+                    // if(formattedRow[i] === '') {
+                    //     formattedRow[i] = 'NULL'
+                    // }
                 }
                 rows.push(formattedRow.join())
             })

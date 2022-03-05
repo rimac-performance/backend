@@ -170,25 +170,6 @@ const validateViewAllRuns = [
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
 ]
 
-const validateRunRegister = [
-    check("run")
-        .exists()
-        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
-        .custom(value => {
-            console.log("value", value)
-        })
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
-    check("name")
-        .exists()
-        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
-        .trim().escape()
-        .isString()
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
-        .not().isEmpty()
-        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD),
-    
-]
-
 module.exports = {
     validateEmail,
     validatePassword,
@@ -198,6 +179,5 @@ module.exports = {
     validateUser,
     validateViewCars, 
     validateViewRun,
-    validateViewAllRuns,
-    validateRunRegister
+    validateViewAllRuns
 }
