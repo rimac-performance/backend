@@ -81,6 +81,7 @@ function viewCars(userID, jwtUserID, role) {
         } else {
             // check if the user is an admin or engineer, then they can view 
             // anyone's cars
+            // ****** MUST FIX
             if (role == 2 || role == 3) {
                 try {
                     const cars = await carDAO.getCarsByUserID(userID);

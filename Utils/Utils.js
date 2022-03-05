@@ -111,8 +111,18 @@ async function mail(to, subject, html) {
 //     });
 // }
 
+function isFileValid (file) {
+    const type = file.type.split("/").pop();
+    const validTypes = ["csv"];
+    if (validTypes.indexOf(type) === -1) {
+      return false;
+    }
+    return true;
+  };
+
 module.exports = {
     generateJWT,
     mail,
-    authenticateJWT
+    authenticateJWT,
+    isFileValid
 }

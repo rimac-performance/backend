@@ -98,9 +98,42 @@ function checkCanViewRun(userID, runID) {
         }
     })
 }
+
+function createRun(carID, runName, fields, rows) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await pool.query("BEGIN")
+            let values = [carID, runName];
+            let query = `INSERT INTO public.run (run_id, car_id, name, run_date)
+            VALUES (gen_random_uuid(), $1, $2, NOW()) RETURNING run_id, car_id, name, run_date;`;
+            let run = await pool.query(query, values)
+            query = `INSERT INTO public.rundata_raw VALUES `;
+            if (rows.length != 0) {
+                i=0
+                for (const row of rows) {
+                    if (i == rows.length - 1) {
+                        query += `('${run.rows[0].run_id}', ${row});`;
+                    } else {
+                        query += `('${run.rows[0].run_id}', ${row}), `;
+                    }
+                    i++
+                }
+                await pool.query(query)
+                await pool.query("COMMIT")
+            }
+            return resolve(run.rows[0])
+        } catch(error) {
+            await pool.query("ROLLBACK")
+            console.log(`Error in creating run at ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
 module.exports = {
     getRunByRunID,
     getAllRunsByCarID,
     checkRunExists,
-    checkCanViewRun
+    checkCanViewRun,
+    createRun
 }

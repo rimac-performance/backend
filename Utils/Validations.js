@@ -1,5 +1,7 @@
 const { check } = require('express-validator');
 const CONSTANTS = require("../Utils/Constants")
+const vinValidator = require("vin-validator")
+
 
 const validateEmail = [
     check("email")
@@ -7,9 +9,9 @@ const validateEmail = [
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .trim().escape()
         .isEmail()
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_EMAIL)
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
         .isString()
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_EMAIL)
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
 ]
 
 const validatePassword = [
@@ -18,7 +20,7 @@ const validatePassword = [
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .escape()
         .isString()
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_EMAIL)
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
 ]
 
 const validateRegister = [
@@ -76,7 +78,10 @@ const validateCarRegister = [
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
         .not().isEmpty()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
-        .trim().escape(),
+        .custom(value => {
+            return vinValidator.validate(value);
+        })
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
     check('model')
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
@@ -89,7 +94,7 @@ const validateCarRegister = [
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .trim().escape()
-        .isInt({ min: 2009, max: 9999 })
+        .isInt({ min: 1900, max: 9999 })
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_YEAR),
     check('color')
         .exists()
@@ -113,7 +118,6 @@ const validateUser = [
     check("user.email")
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
-        
         .isEmail()
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_EMAIL)
         .isString()
@@ -166,6 +170,25 @@ const validateViewAllRuns = [
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
 ]
 
+const validateRunRegister = [
+    check("run")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .custom(value => {
+            console.log("value", value)
+        })
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("name")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .not().isEmpty()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD),
+    
+]
+
 module.exports = {
     validateEmail,
     validatePassword,
@@ -175,5 +198,6 @@ module.exports = {
     validateUser,
     validateViewCars, 
     validateViewRun,
-    validateViewAllRuns
+    validateViewAllRuns,
+    validateRunRegister
 }
