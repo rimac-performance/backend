@@ -170,6 +170,46 @@ const validateViewAllRuns = [
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
 ]
 
+const validateSensorStatus = [
+    check("sensors")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .isArray()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("sensors.*.name")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("sensors.*.status")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .isInt({min:1, max:2})
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+
+]
+
+const validateSensorThreshold = [
+    check("sensors")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .isArray()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("sensors.*.name")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("sensors.*.threshold")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .isFloat()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+
+]
+
 module.exports = {
     validateEmail,
     validatePassword,
@@ -179,5 +219,7 @@ module.exports = {
     validateUser,
     validateViewCars, 
     validateViewRun,
-    validateViewAllRuns
+    validateViewAllRuns,
+    validateSensorStatus,
+    validateSensorThreshold
 }
