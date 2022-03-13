@@ -28,7 +28,7 @@ router.put("/status", authenticateJWT, Validations.validateSensorStatus, (req, r
     }
 })
 
-router.put("/threshold", authenticateJWT, (req, res) => {
+router.put("/threshold", authenticateJWT, Validations.validateSensorThreshold, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

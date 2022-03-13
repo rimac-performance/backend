@@ -35,7 +35,7 @@ function updateThreshold(userID, role, sensors) {
         for (let sensor of sensors) {
             try {
                 if (await sensorDAO.checkSensorExists(sensor.name)) {
-                    await sensorDAO.updateStatus(sensor.name, sensor.threshold, userID)
+                    await sensorDAO.updateThreshold(sensor.name, sensor.threshold, userID)
                 }
             } catch (error) {
                 console.log(`Error updating threshold of sensor at ${FILE_NAME} : ${error}`);
