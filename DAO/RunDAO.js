@@ -1,6 +1,7 @@
 const pool = require("../DAO/DB");
 const FILE_NAME = "RunDAO.js"
 const CONSTANTS = require("../Utils/Constants")
+const sensorDAO = require("../DAO/SensorDAO")
 
 /**
  *  This function returns run data by the car_id
@@ -9,12 +10,22 @@ const CONSTANTS = require("../Utils/Constants")
 function getRunByRunID(runID, fields) {
     return new Promise(async (resolve, reject) => {
         let values = [runID];
+        let validSensors=[];
+        try {
+            const sensors = await sensorDAO.getValidSensors();
+            for (let sensor of sensors) {
+                validSensors.push(sensor.name)
+            }
+        } catch (error) {
+            console.log(`Error getting valid sensors at ${FILE_NAME} : ${error}`)
+            return reject(error)
+        }
         const queryFirst = `SELECT time, `;
         const queryLast = ` FROM rundata_raw WHERE run_id=$1;`
         let keys= ""
         i=0
         while (i < fields.length) {
-            if(CONSTANTS.runColumns.includes(fields[i])){
+            if(validSensors.includes(fields[i])){
                 if (i == fields.length - 1){
                     keys += "\""  + fields[i] + "\""
                 } else {
@@ -30,7 +41,53 @@ function getRunByRunID(runID, fields) {
         }else{
             query = queryFirst + keys + queryLast; 
         }
-        console.log(query)
+        try {
+            return resolve(await pool.query(query, values));
+        } catch(error) {
+            console.log(`Error in getting run id at ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
+/**
+ *  This function returns run data by the car_id
+ * @returns 
+ */
+ function getRunByRunIDForEngineer(runID, fields) {
+    return new Promise(async (resolve, reject) => {
+        let values = [runID];
+        let validSensors=[];
+        try {
+            const sensors = await sensorDAO.getAllSensors();
+            for (let sensor of sensors) {
+                validSensors.push(sensor.name)
+            }
+        } catch (error) {
+            console.log(`Error getting valid sensors at ${FILE_NAME} : ${error}`)
+            return reject(error)
+        }
+        const queryFirst = `SELECT time, `;
+        const queryLast = ` FROM rundata_raw WHERE run_id=$1;`
+        let keys= ""
+        i=0
+        while (i < fields.length) {
+            if(validSensors.includes(fields[i])){
+                if (i == fields.length - 1){
+                    keys += "\""  + fields[i] + "\""
+                } else {
+                    keys += "\"" + fields[i] + "\", "
+                }
+            }
+            i++
+        }
+        let query;
+        if (keys.length == 0) {
+            query = "SELECT FROM rundata_raw WHERE 1=0;"
+            values=[]
+        }else{
+            query = queryFirst + keys + queryLast; 
+        }
         try {
             return resolve(await pool.query(query, values));
         } catch(error) {
@@ -132,6 +189,7 @@ function createRun(carID, runName, fields, rows) {
 
 module.exports = {
     getRunByRunID,
+    getRunByRunIDForEngineer,
     getAllRunsByCarID,
     checkRunExists,
     checkCanViewRun,

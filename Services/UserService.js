@@ -5,6 +5,7 @@ const CONSTANTS = require("../Utils/Constants");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const shortid = require("shortid")
+const path = require("path")
 
 /**
  * This function checks to see if a user exists given an email and password
@@ -138,13 +139,45 @@ function forgot(email) {
         }
         // send email
         try {
-            await utils.mail(email, "Reset Password", resetCode)
+            const options = {
+                from: process.env.EMAIL_USER, // sender address
+                to: email, // list of receivers
+                subject: "Reset Password", // Subject line
+                html: utils.forgotEmailTemplate(resetCode), // html body
+                attachments: [{
+                    filename: 'Rev_Performance_Header.png',
+                    path: path.resolve(__dirname, "../Utils/img/Rev_Performance_Header.png"),
+                    cid: 'performanceHeader' //same cid value as in the html img src
+                }]
+            }
+            await utils.mail(options)
         } catch (error) {
             console.log(`Error sending email at: ${FILE_NAME} ${error}`)
             responseObj.code = CONSTANTS.APP_ERROR_CODE.EMAIL;
             return reject(responseObj)
         }
         return resolve({ success: CONSTANTS.ERROR_DESC.SUCCESS })
+    })
+}
+
+function resetPassword(email, password, resetCode) {
+    return new Promise(async (resolve, reject) => {
+        const responseObj = {}
+        try {
+            const userExists = await userDAO.checkUserExists(email);
+            if(!userExists) {
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.NOT_FOUND;
+                return reject(responseObj)
+            }
+            const salt = await bcrypt.genSalt(saltRounds);
+            const hash = await bcrypt.hash(password, salt);
+            await userDAO.resetPassword(email, resetCode, hash)
+            return resolve({message: "success"})
+        } catch(error) {
+            console.log(`Error resetting password at ${FILE_NAME} : ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj);
+        }
     })
 }
 
@@ -199,6 +232,7 @@ module.exports = {
     login,
     register,
     forgot,
+    resetPassword,
     viewUsers,
     testInsert
 }

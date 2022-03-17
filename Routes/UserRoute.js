@@ -64,7 +64,6 @@ router.put("/forgot", Validations.validateEmail, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
         return sendErrorResponse(res, errors);
     } else {
         const email = req.body.email;
@@ -73,6 +72,29 @@ router.put("/forgot", Validations.validateEmail, (req, res) => {
             return res.send(result);
         }).catch(err => {
             console.log(`Error sending reset link at: ${FILE_NAME} ${err}`);
+            const errorInfo = ErrorUtils.getErrorInfo(err.code);
+            return ErrorUtils.sendResponse(res, responseObj, errorInfo);
+        })
+    }
+})
+
+/**
+ * This route allows a user to reset their password
+ */
+router.put("/reset", Validations.validateResetPassword ,(req, res) => {
+    const responseObj = {};
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return sendErrorResponse(res, errors);
+    } else {
+        const email = req.body.email;
+        const password = req.body.pswd;
+        const resetCode = req.body.resetCode;
+        userService.resetPassword(email, password, resetCode).then(result => {
+            console.log(`Success resetting password at: ${FILE_NAME}`);
+            return res.send(result);
+        }).catch(err => {
+            console.log(`Error resetting password at: ${FILE_NAME} ${err}`);
             const errorInfo = ErrorUtils.getErrorInfo(err.code);
             return ErrorUtils.sendResponse(res, responseObj, errorInfo);
         })

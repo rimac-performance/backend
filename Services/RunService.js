@@ -11,7 +11,7 @@ const path = require("path")
  * This function returns the run of a car as long as the request is valid
  * @returns 
  */
-function viewRuns(runID, fields) {
+function viewRuns(runID, fields, role) {
     return new Promise(async (resolve, reject) => {
         const responseObj = {}
         // First check if car exists
@@ -26,23 +26,14 @@ function viewRuns(runID, fields) {
             responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
             return reject(responseObj)
         }
-        // const newFields=[]
-        // for(let sensorName of fields) {
-        //     // check if sensor in db and status is equal to 1
-        //     try { 
-        //         if(await sensorDAO.checkSensorStatus(sensorName)) {
-        //             sensorName
-        //         }
-
-        //     } catch (error) {
-        //         console.log(`Error checking if sensor is valid at ${FILE_NAME}: ${error}`)
-        //         responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
-        //         return reject(responseObj)
-        //     }
-        // }
         try {
-            const runs = await runDAO.getRunByRunID(runID, fields);
-            return resolve(runs.rows)
+            if (role == 1 || role == undefined) {
+                const runs = await runDAO.getRunByRunID(runID, fields);
+                return resolve(runs.rows)
+            } else {
+                const runs = await runDAO.getRunByRunIDForEngineer(runID, fields);
+                return resolve(runs.rows)
+            }
         } catch (error) {
             console.log(`Error getting run at ${FILE_NAME}: ${error}`)
             responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;

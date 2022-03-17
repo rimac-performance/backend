@@ -210,6 +210,29 @@ const validateSensorThreshold = [
 
 ]
 
+const validateResetPassword = [
+    check("email")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isEmail()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("pswd")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("resetCode")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+]
+
 module.exports = {
     validateEmail,
     validatePassword,
@@ -221,5 +244,6 @@ module.exports = {
     validateViewRun,
     validateViewAllRuns,
     validateSensorStatus,
-    validateSensorThreshold
+    validateSensorThreshold,
+    validateResetPassword
 }

@@ -63,9 +63,37 @@ function updateThreshold(sensorName, threshold, userID) {
     })
 }
 
+function getValidSensors() {
+    return new Promise(async (resolve, reject) => {
+        const query = 'SELECT name FROM sensors WHERE status=1;';
+        try {
+            const sensors = await pool.query(query);
+            return resolve(sensors.rows)
+        } catch (error) {
+            console.log(`Error getting valid status' at ${FILE_NAME} : ${error}`);
+            return reject(error);
+        }
+    })
+}
+
+function getAllSensors() {
+    return new Promise(async (resolve, reject) => {
+        const query = 'SELECT name FROM sensors;';
+        try {
+            const sensors = await pool.query(query);
+            return resolve(sensors.rows)
+        } catch (error) {
+            console.log(`Error getting all status' at ${FILE_NAME} : ${error}`);
+            return reject(error);
+        }
+    })
+}
+
 module.exports = {
     updateStatus,
     checkSensorExists,
     checkSensorStatus,
-    updateThreshold
+    updateThreshold,
+    getValidSensors,
+    getAllSensors
 }

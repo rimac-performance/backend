@@ -7,6 +7,7 @@ const ErrorUtils = require("../Utils/ErrorUtils");
 const Validations = require("../Utils/Validations");
 const { check } = require('express-validator');
 const authenticateJWT = require("../Utils/Utils").authenticateJWT;
+const authenticateOptionalJWT = require("../Utils/Utils").authenticateOptionalJWT;
 const runService = require("../Services/RunService")
 const CONSTANTS = require("../Utils/Constants")
 const multer = require('multer')
@@ -20,17 +21,16 @@ const upload = multer({
 /**
  * This route gets run data from a car
  */
-router.post("/view", Validations.validateViewRun, (req, res) => {
+router.post("/view", authenticateOptionalJWT, Validations.validateViewRun, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return sendErrorResponse(res, errors);
     } else {
-        //const jwtUserID = req.body.user.user_id;
-        //const role = req.body.user.user_role;
+        const role = req.body.user ? req.body.user.user_role : undefined;
         const runID = req.body.run_id;
         const fields = req.body.fields;
-        runService.viewRuns(runID, fields).then(result => {
+        runService.viewRuns(runID, fields, role).then(result => {
             console.log(`Success viewing run at ${FILE_NAME}`)
             return res.send(result);
         }).catch(err => {

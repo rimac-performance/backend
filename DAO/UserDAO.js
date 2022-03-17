@@ -89,6 +89,19 @@ function updateResetPassword(resetCode, email) {
     });
 }
 
+function resetPassword(email, resetCode, password) {
+    return new Promise(async (resolve, reject) => {
+        const values = [email, resetCode, password];
+        const query = `UPDATE public.user SET pswd= $3, pswd_reset = '' WHERE email = $1 and pswd_reset = $2;`;
+        try {
+            return resolve(await pool.query(query, values))
+        } catch (error) {
+            console.log(`Error in resetting password at ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
 /**
  * This function returns all of the users in the user table
  * @returns 
@@ -141,6 +154,7 @@ module.exports = {
     createUser,
     checkUserExists,
     updateResetPassword,
+    resetPassword,
     getAllUsers,
     getUserByUserID,
     testInsert
