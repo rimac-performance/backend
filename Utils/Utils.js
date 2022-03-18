@@ -170,11 +170,27 @@ function forgotEmailTemplate(code) {
     </html>`
 }
 
+const validMimeTypes = [`text/x-csv`,
+    `application/vnd.ms-excel`,
+    `application/csv`,
+    `application/x-csv`,
+    `text/csv`,
+    `text/comma-separated-values`,
+    `text/x-comma-separated-values`]
+
+function isValidMimeType(type) {
+    if (validMimeTypes.includes(type)) {
+        return true;
+    }
+    return false;
+}
+
 module.exports = {
     generateJWT,
     mail,
     authenticateJWT,
     authenticateOptionalJWT,
     isFileValid,
-    forgotEmailTemplate
+    forgotEmailTemplate,
+    isValidMimeType
 }

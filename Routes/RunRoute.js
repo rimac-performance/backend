@@ -10,11 +10,12 @@ const authenticateJWT = require("../Utils/Utils").authenticateJWT;
 const authenticateOptionalJWT = require("../Utils/Utils").authenticateOptionalJWT;
 const runService = require("../Services/RunService")
 const CONSTANTS = require("../Utils/Constants")
+const isValidMimeType = require("../Utils/Utils").isValidMimeType;
 const multer = require('multer')
 const upload = multer({
     dest: './uploads/',
     fileFilter: function (req, file, cb) {
-        return file.mimetype === 'text/csv' ? cb(null, true) : cb(new Error(), false)
+        return isValidMimeType(file.mimetype) ? cb(null, true) : cb(new Error(), false)
     }
 }).single("run")
 
