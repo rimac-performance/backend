@@ -73,6 +73,7 @@ router.post("/", authenticateJWT, (req, res) => {
     upload(req, res, async function (err) {
         // Check if file is missing or invalid
         if (err || !req.file) {
+            console.log(err, req.file)
             return res.status(400).send([{ message: "File Type Must Be CSV", data: "run" }])
         }
         // Perform validations

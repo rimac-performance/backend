@@ -128,9 +128,9 @@ function uploadRun(userID, carID, runName, file) {
                     if(i==0){
                         formattedRow[i] = "'" + formattedRow[i].slice(0, 23).replace('T', ' ') + "'"
                     }
-                    // if(formattedRow[i] === '') {
-                    //     formattedRow[i] = 'NULL'
-                    // }
+                    if(formattedRow[i] === '') {
+                        formattedRow[i] = `NULL`
+                    }
                 }
                 rows.push(formattedRow.join())
             })
@@ -140,6 +140,8 @@ function uploadRun(userID, carID, runName, file) {
                     return resolve(run)
                 } catch (error) {
                     console.log(`Couldn't insert files at ${FILE_NAME} : ${error}`)
+                    responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+                    return reject(responseObj)
                 }
             })
         // delete file after

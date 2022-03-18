@@ -176,8 +176,8 @@ function createRun(carID, runName, fields, rows) {
                     i++
                 }
                 await pool.query(query)
-                await pool.query("COMMIT")
             }
+            await pool.query("COMMIT")
             return resolve(run.rows[0])
         } catch(error) {
             await pool.query("ROLLBACK")

@@ -41,6 +41,8 @@ const validateRegister = [
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .escape()
         .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .isLength({min: 8, max:16})
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
     check("phone")
         .exists()
