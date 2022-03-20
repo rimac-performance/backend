@@ -1,6 +1,30 @@
 const pool = require("../DAO/DB");
 const FILE_NAME = "SensorDAO.js"
 
+function getAllStatus() {
+    return new Promise(async (resolve, reject) => {
+        const query = 'SELECT name, status FROM sensors;';
+        try {
+            return resolve(await pool.query(query))
+        } catch (error) {
+            console.log(`Error getting status at ${FILE_NAME} : ${error}`);
+            return reject(error);
+        }
+    })
+}
+
+function getAllThreshold() {
+    return new Promise(async (resolve, reject) => {
+        const query = 'SELECT name, threshold FROM sensors;';
+        try {
+            return resolve(await pool.query(query))
+        } catch (error) {
+            console.log(`Error getting threshold at ${FILE_NAME} : ${error}`);
+            return reject(error);
+        }
+    })
+}
+
 function updateStatus(sensorName, status, userID) {
     return new Promise(async (resolve, reject) => {
         const values = [sensorName, status, userID];
@@ -90,6 +114,8 @@ function getAllSensors() {
 }
 
 module.exports = {
+    getAllStatus,
+    getAllThreshold,
     updateStatus,
     checkSensorExists,
     checkSensorStatus,

@@ -2,6 +2,40 @@ const FILE_NAME = "SensorService.js";
 const CONSTANTS = require("../Utils/Constants");
 const sensorDAO = require("../DAO/SensorDAO")
 
+function getStatus(role) {
+    return new Promise(async (resolve, reject) => {
+        const responseObj = {}
+        if (role != 3) {
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED;
+            return reject(responseObj)
+        }
+        try {
+            const status = await sensorDAO.getAllStatus();
+            return resolve(status.rows)
+        } catch(error) {
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
+        }
+    })
+}
+
+function getThreshold(role) {
+    return new Promise(async (resolve, reject) => {
+        const responseObj = {}
+        if (role == 1) {
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED;
+            return reject(responseObj)
+        }
+        try {
+            const threshold = await sensorDAO.getAllThreshold();
+            return resolve(threshold.rows)
+        } catch(error) {
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
+        }
+    })
+}
+
 function updateStatus(userID, role, sensors) {
     return new Promise(async (resolve, reject) => {
         const responseObj = {}
@@ -48,6 +82,8 @@ function updateThreshold(userID, role, sensors) {
 }
 
 module.exports = {
+    getStatus,
+    getThreshold,
     updateStatus,
     updateThreshold
 }
