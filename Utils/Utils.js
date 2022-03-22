@@ -170,6 +170,63 @@ function forgotEmailTemplate(code) {
     </html>`
 }
 
+function sendRunTemplate(runID, firstName, lastName) {
+    return `<!DOCTYPE html>
+    <html lang="en" xmlns="https://www.w3.org/1999/xhtml/" xmlns:o="urn:schemas-microsoft-com:office:office">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="x-apple-disable-message-reformatting">
+        <title>Reset Password</title>
+        <!--[if mso]>
+        <noscript>
+            <xml>
+                <o:OfficeDocumentSettings>
+                    <o:PixelsPerInch>96</o:PixelsPerInch>
+                </o:OfficeDocumentSettings>
+            </xml>
+        </noscript>
+        <![endif]-->
+        <style>
+            table, td, div, h1, p {font-family: Roboto, Arial, sans-serif;}
+            .button{
+                background-color: #000000;
+                color: #ffffff;
+                font-family: Roboto, Arial, sans-serif;
+                padding: 15px 32px;
+                text-decoration: none;
+                font-weight: bold;
+                text-transform: uppercase;
+                text-align: center;
+                border-radius: 4px;
+                margin:0 auto;
+                display: block;
+            }
+            .button:hover {
+                background-color: #E9591C;
+            }
+            /*table, td {border:2px solid #000000 !important;}*/
+        </style>
+    </head>
+        <body style="margin:0;padding:0;">
+            <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+                <tr>
+                    <td align="center" style="padding:40px 0 30px 0;background: #ffffff;">
+                        <img src="Rev_Performance_Header.png" alt="Rev Performance logo" width="300" style="height:auto;display:block;" cid="performanceHeader"/>
+                    </td>
+                </tr>    
+                <tr>
+                    <td style="padding:36px 30px 42px 30px;">
+                        <h1>${firstName} is sending you a run</h1>
+                        <p>Your friend ${firstName} ${lastName} is sending you an analysis to look at for their Rev vehicle. Click the link below to check it out!</p>
+                        <a href="${process.env.FRONTEND_URL}${runID}" class="button">Look at This Run</a>
+                    </td>
+                </tr>
+            </table>
+        </body>
+    </html>`
+}
+
 const validMimeTypes = [`text/x-csv`,
     `application/vnd.ms-excel`,
     `application/csv`,
@@ -192,5 +249,6 @@ module.exports = {
     authenticateOptionalJWT,
     isFileValid,
     forgotEmailTemplate,
-    isValidMimeType
+    isValidMimeType,
+    sendRunTemplate
 }

@@ -9,42 +9,26 @@ const authenticateJWT = require("../Utils/Utils").authenticateJWT;
 const sensorService = require("../Services/SensorService")
 
 router.get("/status", authenticateJWT, (req, res) => {
-    const responseObj = {};
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return sendErrorResponse(res, errors);
-    } else {
-        const role = req.body.user.user_role;
-        sensorService.getStatus(role).then(result => {
-            return res.send(result)
-        }).catch(err => {
-            console.log(`Error getting status at: ${FILE_NAME} ${err}`);
-            const errorInfo = ErrorUtils.getErrorInfo(err.code);
-            return ErrorUtils.sendResponse(res, responseObj, errorInfo);
-        })
-    }
+    sensorService.getStatus().then(result => {
+        return res.send(result)
+    }).catch(err => {
+        console.log(`Error getting status at: ${FILE_NAME} ${err}`);
+        const errorInfo = ErrorUtils.getErrorInfo(err.code);
+        return ErrorUtils.sendResponse(res, responseObj, errorInfo);
+    })
 })
 
-router.get("/threshold", authenticateJWT, (req, res) => {
-    const responseObj = {};
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return sendErrorResponse(res, errors);
-    } else {
-        const role = req.body.user.user_role;
-        console.log(role)
-        sensorService.getThreshold(role).then(result => {
-            return res.send(result)
-        }).catch(err => {
-            console.log(`Error getting threshold at: ${FILE_NAME} ${err}`);
-            const errorInfo = ErrorUtils.getErrorInfo(err.code);
-            return ErrorUtils.sendResponse(res, responseObj, errorInfo);
-        })
-    }
-
+router.get("/threshold", (req, res) => {
+    sensorService.getThreshold().then(result => {
+        return res.send(result)
+    }).catch(err => {
+        console.log(`Error getting threshold at: ${FILE_NAME} ${err}`);
+        const errorInfo = ErrorUtils.getErrorInfo(err.code);
+        return ErrorUtils.sendResponse(res, responseObj, errorInfo);
+    })
 })
 
-router.put("/status", authenticateJWT, Validations.validateSensorStatus, (req, res) => {
+router.put("/status", Validations.validateSensorStatus, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

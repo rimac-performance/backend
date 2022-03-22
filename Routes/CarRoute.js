@@ -57,6 +57,27 @@ router.get("/", authenticateJWT, Validations.validateViewCars, (req, res) => {
 })
 
 /**
+ * This route returns the cars based on a users id
+ */
+ router.get("/all", authenticateJWT, Validations.validateViewCars, (req, res) => {
+    const responseObj = {};
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return sendErrorResponse(res, errors);
+    } else {
+        const role = req.body.user.user_role;
+        carService.viewAllCars(role).then(result => {
+            console.log(`Success viewing all cars in ${FILE_NAME}`)
+            return res.send(result)
+        }).catch(err => {
+            console.log(`Error viewing all cars at: ${FILE_NAME} ${err}`);
+            const errorInfo = ErrorUtils.getErrorInfo(err.code);
+            return ErrorUtils.sendResponse(res, responseObj, errorInfo);
+        })
+    }
+})
+
+/**
  * This route will map an engineer/admin to a car
  */
 router.post("/admin", authenticateJWT, Validations.validateCarID, (req, res) => {

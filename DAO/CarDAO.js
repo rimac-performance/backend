@@ -150,6 +150,18 @@ function checkCarMapsToUser(carID, userID) {
     })
 }
 
+function getAllCars() {
+    return new Promise(async (resolve, reject) => {
+        const query = `SELECT car.* FROM car;`;
+        try {
+            return resolve(await pool.query(query));
+        } catch (error) {
+            console.log(`Error in checking car exists ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
 module.exports = {
     createCar,
     checkCarExists,
@@ -157,5 +169,6 @@ module.exports = {
     createCar,
     getCarsByUserID,
     getCarsByUserIDForEngineer,
-    checkCarMapsToUser
+    checkCarMapsToUser,
+    getAllCars
 }

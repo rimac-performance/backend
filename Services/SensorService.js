@@ -2,13 +2,9 @@ const FILE_NAME = "SensorService.js";
 const CONSTANTS = require("../Utils/Constants");
 const sensorDAO = require("../DAO/SensorDAO")
 
-function getStatus(role) {
+function getStatus() {
     return new Promise(async (resolve, reject) => {
         const responseObj = {}
-        if (role != 3) {
-            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED;
-            return reject(responseObj)
-        }
         try {
             const status = await sensorDAO.getAllStatus();
             return resolve(status.rows)
@@ -19,13 +15,9 @@ function getStatus(role) {
     })
 }
 
-function getThreshold(role) {
+function getThreshold() {
     return new Promise(async (resolve, reject) => {
         const responseObj = {}
-        if (role == 1) {
-            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED;
-            return reject(responseObj)
-        }
         try {
             const threshold = await sensorDAO.getAllThreshold();
             return resolve(threshold.rows)

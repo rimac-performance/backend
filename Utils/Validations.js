@@ -1,6 +1,7 @@
 const { check } = require('express-validator');
 const CONSTANTS = require("../Utils/Constants")
 const vinValidator = require("vin-validator")
+const shortid = require("shortid")
 
 
 const validateEmail = [
@@ -48,9 +49,7 @@ const validateRegister = [
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .trim().escape()
-        .isInt()
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
-        .isLength({ min: 10, max: 11 })
+        .isMobilePhone()
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
     check("email")
         .exists()
@@ -232,7 +231,83 @@ const validateResetPassword = [
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .escape()
         .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .custom(value => {
+            return shortid.isValid(value);
+        }),
+]
+
+const validateSendRun = [
+    check("email")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isEmail()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .isString()
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("run_id")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isUUID()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .not().isEmpty()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD),
+]
+
+const validateAdminUserRegister = [
+    check("pswd")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("email")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isEmail()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("phone")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isMobilePhone()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("first_name")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("last_name")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("user_role")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isInt({min: 1, max:3})
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+]
+
+const validateUserID = [
+    check("user_id")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .not().isEmpty()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD),
 ]
 
 module.exports = {
@@ -247,5 +322,8 @@ module.exports = {
     validateViewAllRuns,
     validateSensorStatus,
     validateSensorThreshold,
-    validateResetPassword
+    validateResetPassword,
+    validateSendRun,
+    validateAdminUserRegister,
+    validateUserID
 }

@@ -99,7 +99,27 @@ function viewCars(userID, jwtUserID, role) {
     })
 }
 
+function viewAllCars(role) {
+    return new Promise(async (resolve, reject) => {
+        const responseObj = {}
+        if (role == 2 || role == 3) {
+            try {
+                const cars = await carDAO.getAllCars();
+                return resolve(cars.rows)
+            } catch(error) {
+                console.log(`Error getting car in ${FILE_NAME}: ${error}`)
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR
+                return reject(responseObj)
+            }
+        } else {
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED
+                return reject(responseObj)
+            }
+    })
+}
+
 module.exports = {
     registerCar,
-    viewCars
+    viewCars,
+    viewAllCars
 }

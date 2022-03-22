@@ -11,6 +11,7 @@ const userRoute = require("./Routes/UserRoute")
 const carRoute = require("./Routes/CarRoute")
 const runRoute = require("./Routes/RunRoute")
 const sensorRoute = require("./Routes/SensorRoute")
+const adminRoute = require("./Routes/AdminRoute")
 
 // route for handling 404 requests(unavailable routes)
 // app.use((req, res, next) => {
@@ -25,6 +26,7 @@ app.use("/api/user", userRoute);
 app.use("/api/car", carRoute);
 app.use("/api/run", runRoute)
 app.use("/api/sensor", sensorRoute)
+app.use("/api/admin", adminRoute)
 
 const server = app.listen(port, () => {
     console.log(`Server listening on port: ${port}`)

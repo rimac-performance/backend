@@ -116,4 +116,31 @@ router.post("/", authenticateJWT, (req, res) => {
     })
 })
 
+/**
+ * This route emails a run to a registered/unregistered user
+ */
+router.get("/send", authenticateJWT, Validations.validateSendRun, (req, res) => {
+    const responseObj = {};
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return sendErrorResponse(res, errors);
+    } else {
+        const firstName = req.body.user.first_name;
+        const lastName = req.body.user.last_name;
+        const userID = req.body.user.user_id;
+        const role = req.body.user.user_role;
+        const runID = req.query.run_id;
+        const email = req.query.email;
+        runService.emailRun(email,role, userID, runID, firstName, lastName).then(result => {
+            console.log(`Success emailing run at ${FILE_NAME}`);
+            return res.send(result)
+        }).catch(err => {
+            console.log(`Error emailing run at: ${FILE_NAME} ${err}`);
+            const errorInfo = ErrorUtils.getErrorInfo(err.code);
+            return ErrorUtils.sendResponse(res, responseObj, errorInfo);
+        })
+    }
+})
+
+
 module.exports = router;

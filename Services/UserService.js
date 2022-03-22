@@ -88,7 +88,6 @@ function register(firstName, lastName, password, phone, email) {
         try {
             const salt = await bcrypt.genSalt(saltRounds);
             const hash = await bcrypt.hash(password, salt);
-            console.log(hash)
             newUser = await userDAO.createUser(email, hash, phone, firstName, lastName);
         } catch (error) {
             console.log(`Error creating user at: ${FILE_NAME} ${error}`)
@@ -96,7 +95,6 @@ function register(firstName, lastName, password, phone, email) {
             return reject(responseObj)
         }
         newUser = newUser.rows[0];
-        console.log(newUser)
         return resolve({
             token: utils.generateJWT(newUser.user_id, newUser.email, newUser.phone,
                 newUser.first_name, newUser.last_name, newUser.user_role)

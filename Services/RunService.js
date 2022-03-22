@@ -5,7 +5,8 @@ const runDAO = require("../DAO/RunDAO");
 const sensorDAO = require("../DAO/SensorDAO")
 const fs = require("fs")
 const csv = require("fast-csv")
-const path = require("path")
+const path = require("path");
+const utils = require("nodemon/lib/utils");
 
 /**
  * This function returns the run of a car as long as the request is valid
@@ -153,8 +154,47 @@ function uploadRun(userID, carID, runName, file) {
     })
 }
 
+function emailRun(email, role, userID, runID, firstName, lastName) {
+    return new Promise(async (resolve, reject) => {
+        const responseObj = {}
+        // Check if user is authorized to send run
+        if (role == 1) {
+            try {
+                if(!(await runDAO.checkCanViewRun(userID, runID))) {
+                    responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED;
+                    return reject(responseObj)
+                }
+            } catch(error) {
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+                return reject(responseObj)
+            }
+        }
+        // send email
+        try {
+            const options = {
+                from: process.env.EMAIL_USER, // sender address
+                to: email, // list of receivers
+                subject: "You have been sent run!", // Subject line
+                html: utils.sendRunTemplate(runID, firstName, lastName) , // html body
+                attachments: [{
+                    filename: 'Rev_Performance_Header.png',
+                    path: path.resolve(__dirname, "../Utils/img/Rev_Performance_Header.png"),
+                    cid: 'performanceHeader' //same cid value as in the html img src
+                }]
+            }
+            await utils.mail(options)
+        } catch (error) {
+            console.log(`Error sending email at: ${FILE_NAME} ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.EMAIL;
+            return reject(responseObj)
+        }
+        return resolve({ success: CONSTANTS.ERROR_DESC.SUCCESS })
+    })
+}
+
 module.exports = {
     viewRuns,
     viewAllRuns,
-    uploadRun
+    uploadRun,
+    emailRun
 }
