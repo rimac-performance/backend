@@ -78,8 +78,32 @@ router.get("/all", authenticateJWT, (req, res) => {
     }
 })
 
-router.put("/", authenticateJWT, (req, res) => {
-    
+/**
+ * This function updates a user if you are an admin
+ */
+router.put("/", authenticateJWT, Validations.validateAdminUserRegister,(req, res) => {
+    const responseObj = {};
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return sendErrorResponse(res, errors);
+    } else {
+        const userID = req.body.user_id;
+        const password = req.body.pswd;
+        const email = req.body.email;
+        const phone = req.body.phone;
+        const firstName = req.body.first_name;
+        const lastName = req.body.last_name;
+        const userRole = req.body.user_role;
+        const adminRole = req.body.user.user_role;
+        adminService.updateUser(userID, password, email, phone, firstName, lastName, userRole, adminRole).then(result => {
+            console.log(`Success getting all users at ${FILE_NAME}`)
+            return res.send(result)
+        }).catch(err => {
+            console.log(`Error getting all users at: ${FILE_NAME} ${err}`);
+            const errorInfo = ErrorUtils.getErrorInfo(err.code);
+            return ErrorUtils.sendResponse(res, responseObj, errorInfo);
+        })
+    }
 })
 
 /**

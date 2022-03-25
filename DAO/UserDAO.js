@@ -71,6 +71,29 @@ function checkUserExists(email) {
 }
 
 /**
+ * This function checks if a userID exists in the db
+ * @param {*} email 
+ * @returns 
+ */
+ function checkUserExistsByUserID(userID) {
+    return new Promise(async (resolve, reject) => {
+        const values = [userID];
+        const query = `SELECT * FROM public.user WHERE user_id=$1`;
+        try {
+            const user = await pool.query(query, values);
+            if (user.rows.length == 0) {
+                return resolve(false)
+            } else {
+                return resolve(true)
+            }
+        } catch (error) {
+            console.log(`Error in checking user exists in ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
+/**
  * This function updates the password 
  * @param {*} resetCode 
  * @param {*} email 
@@ -153,6 +176,7 @@ module.exports = {
     getUser,
     createUser,
     checkUserExists,
+    checkUserExistsByUserID,
     updateResetPassword,
     resetPassword,
     getAllUsers,

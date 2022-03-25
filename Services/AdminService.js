@@ -53,7 +53,7 @@ function getUser(userID, adminRole) {
         const responseObj = {}
         if (adminRole == 2 || adminRole == 3) {
             try{
-                const user = await userDAO.getUserByUserID(userID)
+                const user = await adminDAO.getUser(userID)
                 if(user.rows.length == 0) {
                     responseObj.code = CONSTANTS.APP_ERROR_CODE.NOT_FOUND
                     return reject(responseObj)
@@ -77,7 +77,7 @@ function getAllUsers(adminRole) {
         const responseObj = {}
         if (adminRole == 2 || adminRole == 3) {
             try {
-                const users = await userDAO.getAllUsers();
+                const users = await adminDAO.getAllUsers();
                 return resolve(users.rows)
             } catch(error) {
                 console.log(`Error viewing all users at: ${FILE_NAME} ${error}`)
@@ -91,9 +91,44 @@ function getAllUsers(adminRole) {
     })
 }
 
-function updateUser(userID, ) {
+function updateUser(userID, password, email, phone, firstName, lastName, userRole, adminRole) {
     return new Promise(async (resolve, reject) => {
-        
+        responseObj = {}
+        let user;
+        let newUser;
+        // check if user is an admin
+        if (adminRole != 3) {
+            console.log(`Error user is not authorized to update user at: ${FILE_NAME}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNAUTHORIZED;
+            return reject(responseObj)
+        }
+        // Check if user exists
+        try {
+            user = await userDAO.checkUserExistsByUserID(userID);
+            if (!user) {
+                console.log(`Error user not found at: ${FILE_NAME}`)
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.NOT_FOUND;
+                return reject(responseObj)
+            }
+        } catch (error) {
+            console.log(`Error checking user at: ${FILE_NAME} ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
+        }
+        // Create User
+        try {
+            if (password) {
+                const salt = await bcrypt.genSalt(saltRounds);
+                password = await bcrypt.hash(password, salt);
+            }
+            newUser = await adminDAO.updateUser(userID, password, email, phone, firstName, lastName, userRole);
+        } catch (error) {
+            console.log(`Error updating user at: ${FILE_NAME} ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
+        }
+        newUser = newUser.rows[0];
+        return resolve(newUser);
     })
 }
 
@@ -123,5 +158,6 @@ module.exports = {
     insertUser,
     getUser,
     getAllUsers,
-    deleteUser
+    deleteUser,
+    updateUser
 }

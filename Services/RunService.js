@@ -7,6 +7,7 @@ const fs = require("fs")
 const csv = require("fast-csv")
 const path = require("path");
 const utils = require("nodemon/lib/utils");
+const toCSV = require("json2csv")
 
 /**
  * This function returns the run of a car as long as the request is valid
@@ -192,9 +193,63 @@ function emailRun(email, role, userID, runID, firstName, lastName) {
     })
 }
 
+function downloadRun(runID, role) {
+    return new Promise(async (resolve, reject) => {
+        const responseObj = {}
+        // First check if car exists
+        try {
+            const runExists = await runDAO.checkRunExists(runID)
+            if (!runExists) {
+                responseObj.code = CONSTANTS.APP_ERROR_CODE.NOT_FOUND;
+                return reject(responseObj)
+            }
+        } catch (error) {
+            console.log(`Error checking if run exists at ${FILE_NAME}: ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
+        }
+        try {
+            let csv;
+            if (role == 1 || role == undefined) {
+                let validSensors = [];
+                const sensors = await sensorDAO.getValidSensors();
+                for (let sensor of sensors) {
+                    validSensors.push(sensor.name)
+                }
+                const runs = await runDAO.getRunByRunID(runID, validSensors);
+                csv = toCSV.parse(runs.rows, validSensors)
+                
+            } else {
+                let validSensors = [];
+                const sensors = await sensorDAO.getAllSensors();
+                for (let sensor of sensors) {
+                    validSensors.push(sensor.name)
+                }
+                const runs = await runDAO.getRunByRunIDForEngineer(runID, validSensors);
+                csv = toCSV.parse(runs.rows, validSensors)
+            }
+            let filename = `downloads/run_${runID}.csv`
+            fs.writeFile(filename, csv, (err, data) => {
+                if (err) {
+                    console.log(`Error downloading run at ${FILE_NAME}: ${err}`)
+                    responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+                    return reject(responseObj);
+                } else {
+                    return resolve(path.resolve(__dirname,'..', filename))
+                }
+            });
+        } catch (error) {
+            console.log(`Error downloading run at ${FILE_NAME}: ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
+        }
+    })
+}
+
 module.exports = {
     viewRuns,
     viewAllRuns,
     uploadRun,
-    emailRun
+    emailRun,
+    downloadRun
 }

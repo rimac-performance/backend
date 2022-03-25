@@ -18,6 +18,7 @@ const upload = multer({
         return isValidMimeType(file.mimetype) ? cb(null, true) : cb(new Error(), false)
     }
 }).single("run")
+const fs = require("fs")
 
 /**
  * This route gets run data from a car
@@ -139,6 +140,28 @@ router.get("/send", authenticateJWT, Validations.validateSendRun, (req, res) => 
             const errorInfo = ErrorUtils.getErrorInfo(err.code);
             return ErrorUtils.sendResponse(res, responseObj, errorInfo);
         })
+    }
+})
+
+/**
+ * This route emails a run to a registered/unregistered user
+ */
+ router.get("/download", authenticateOptionalJWT, Validations.validateRunID, (req, res) => {
+    const responseObj = {};
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return sendErrorResponse(res, errors);
+    } else {
+        const role = req.body.user ? req.body.user.user_role : undefined;
+        const runID = req.query.run_id;
+        runService.downloadRun(runID, role).then(result => {
+            console.log(`Success downloading run at ${FILE_NAME}`)
+            res.sendFile(result)
+        }).catch(err => {
+            console.log(`Error downloading run at: ${FILE_NAME} ${err}`);
+            const errorInfo = ErrorUtils.getErrorInfo(err.code);
+            return ErrorUtils.sendResponse(res, responseObj, errorInfo);
+        });
     }
 })
 

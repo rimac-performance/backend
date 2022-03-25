@@ -299,11 +299,73 @@ const validateAdminUserRegister = [
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
 ]
 
+const validateAdminUserUpdate = [
+    check("user_id")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .not().isEmpty()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD),
+    check("pswd")
+        .optional()
+        .escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("email")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isEmail()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("phone")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isMobilePhone()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("first_name")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("last_name")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+    check("user_role")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isInt({min: 1, max:3})
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+]
+
 const validateUserID = [
     check("user_id")
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .trim().escape()
+        .isString()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .not().isEmpty()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD),
+]
+
+
+const validateRunID = [
+    check("run_id")
+        .exists()
+        .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
+        .trim().escape()
+        .isUUID()
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
         .isString()
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
         .not().isEmpty()
@@ -325,5 +387,7 @@ module.exports = {
     validateResetPassword,
     validateSendRun,
     validateAdminUserRegister,
-    validateUserID
+    validateUserID,
+    validateRunID,
+    validateAdminUserUpdate
 }
