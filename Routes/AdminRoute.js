@@ -81,7 +81,7 @@ router.get("/all", authenticateJWT, (req, res) => {
 /**
  * This function updates a user if you are an admin
  */
-router.put("/", authenticateJWT, Validations.validateAdminUserRegister,(req, res) => {
+router.put("/", authenticateJWT, Validations.validateAdminUserUpdate,(req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
