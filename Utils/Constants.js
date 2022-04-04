@@ -13,7 +13,7 @@ const ERROR_DESC = {
     FAILED: "Not your fault!",
     PASSWORD_MISMATCH: "password does not match",
     INCORRECT_PASSWORD_COMPLEXITY:
-        "password should be combination of one uppercase , one lower case, one special char, one digit and min 8 , max 20 char long",
+        "password should be 8 charachters long, and contain at least 1 number",
     INVALID_EMAIL: "email is invalid!",
     USER_ALREADY_EXISTS: "user already exists!",
     CAR_ALREADY_EXISTS: "car already exists!",

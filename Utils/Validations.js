@@ -2,7 +2,7 @@ const { check } = require('express-validator');
 const CONSTANTS = require("../Utils/Constants")
 const vinValidator = require("vin-validator")
 const shortid = require("shortid")
-
+const passwordRegex = require("../Utils/Utils").passwordRegex
 
 const validateEmail = [
     check("email")
@@ -22,6 +22,8 @@ const validatePassword = [
         .escape()
         .isString()
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .matches(passwordRegex)
+        .withMessage(CONSTANTS.ERROR_DESC.INCORRECT_PASSWORD_COMPLEXITY)
 ]
 
 const validateRegister = [
@@ -43,8 +45,8 @@ const validateRegister = [
         .escape()
         .isString()
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
-        .isLength({min: 8, max:16})
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+        .matches(passwordRegex)
+        .withMessage(CONSTANTS.ERROR_DESC.INCORRECT_PASSWORD_COMPLEXITY),
     check("phone")
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
@@ -225,7 +227,9 @@ const validateResetPassword = [
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .escape()
         .isString()
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .matches(passwordRegex)
+        .withMessage(CONSTANTS.ERROR_DESC.INCORRECT_PASSWORD_COMPLEXITY),
     check("resetCode")
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
@@ -264,7 +268,9 @@ const validateAdminUserRegister = [
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .escape()
         .isString()
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .matches(passwordRegex)
+        .withMessage(CONSTANTS.ERROR_DESC.INCORRECT_PASSWORD_COMPLEXITY),
     check("email")
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
@@ -312,7 +318,9 @@ const validateAdminUserUpdate = [
         .optional()
         .escape()
         .isString()
-        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD),
+        .withMessage(CONSTANTS.ERROR_DESC.INVALID_FIELD)
+        .matches(passwordRegex)
+        .withMessage(CONSTANTS.ERROR_DESC.INCORRECT_PASSWORD_COMPLEXITY),
     check("email")
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)

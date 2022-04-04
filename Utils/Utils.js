@@ -161,7 +161,7 @@ function forgotEmailTemplate(code) {
                     <td style="padding:36px 30px 42px 30px;">
                         <h1>Reset your password</h1>
                         <p>A request has been sent to reset your password for Rev Performance. To reset your password, click the button below.</p>
-                        <a href="${process.env.FRONTEND_URL}${code}" class="button">reset your password</a>
+                        <a href="${process.env.FRONTEND_URL}resetPassword/${code}" class="button">reset your password</a>
                         <p>If you did not request a password reset, you can safely ignore this email. Your password will not be changed.</p>
                     </td>
                 </tr>
@@ -242,6 +242,8 @@ function isValidMimeType(type) {
     return false;
 }
 
+const passwordRegex = `^(?=.*\d).{8,}$`;
+
 module.exports = {
     generateJWT,
     mail,
@@ -250,5 +252,6 @@ module.exports = {
     isFileValid,
     forgotEmailTemplate,
     isValidMimeType,
-    sendRunTemplate
+    sendRunTemplate,
+    passwordRegex
 }
