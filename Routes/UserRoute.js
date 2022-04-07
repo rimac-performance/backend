@@ -125,13 +125,4 @@ router.get("/", authenticateJWT, (req, res) => {
     }
 })
 
-router.get("/insert", (req, res) => {
-    const password = "Password123"
-    userService.testInsert(password).then(result => {
-        return res.send(result)
-    }).catch(error => {
-        return res.send(error)
-    })
-})
-
 module.exports = router;

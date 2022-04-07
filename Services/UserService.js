@@ -213,24 +213,10 @@ function viewUsers(userID, role) {
     })
 }
 
-function testInsert(password) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const salt = await bcrypt.genSalt(saltRounds);
-            const hash = await bcrypt.hash(password, salt);
-            await userDAO.testInsert(hash)
-            return resolve({success: "success"})
-        } catch(error) {
-            return reject(error)
-        }
-    })
-}
-
 module.exports = {
     login,
     register,
     forgot,
     resetPassword,
-    viewUsers,
-    testInsert
+    viewUsers
 }

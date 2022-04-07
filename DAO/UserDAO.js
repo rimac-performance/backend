@@ -159,19 +159,6 @@ function getUserByUserID(userID) {
     })
 }
 
-function testInsert(hash) {
-    return new Promise(async (resolve, reject ) => {
-        const values = [hash];
-        const query = `UPDATE public.user SET pswd=$1 where email='ghuckin0@yahoo.co.jp';`
-        try {
-            return resolve(await pool.query(query, values))
-        } catch (error) {
-            console.log(`Error in getting user in ${FILE_NAME}: ${error}`)
-            return reject(error);
-        }
-    })
-}
-
 module.exports = {
     getUser,
     createUser,
@@ -181,5 +168,4 @@ module.exports = {
     resetPassword,
     getAllUsers,
     getUserByUserID,
-    testInsert
 }
