@@ -97,7 +97,7 @@ const validateCarRegister = [
         .exists()
         .withMessage(CONSTANTS.ERROR_DESC.MISSING_FIELD)
         .trim().escape()
-        .isInt({ min: 1900, max: 9999 })
+        .isInt({ min: 1900, max: new Date().getFullYear() + 1 })
         .withMessage(CONSTANTS.ERROR_DESC.INVALID_YEAR),
     check('color')
         .exists()
