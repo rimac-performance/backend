@@ -6,7 +6,7 @@ const sensorDAO = require("../DAO/SensorDAO")
 const fs = require("fs")
 const csv = require("fast-csv")
 const path = require("path");
-const utils = require("nodemon/lib/utils");
+const utils = require("../Utils/Utils");
 const toCSV = require("json2csv")
 
 /**
@@ -171,12 +171,13 @@ function emailRun(email, role, userID, runID, firstName, lastName) {
             }
         }
         // send email
+        
         try {
             const options = {
                 from: process.env.EMAIL_USER, // sender address
                 to: email, // list of receivers
                 subject: "You have been sent run!", // Subject line
-                html: utils.sendRunTemplate(runID, firstName, lastName) , // html body
+                html: utils.sendRunTemplate(runID, firstName, lastName), // html body
                 attachments: [{
                     filename: 'Rev_Performance_Header.png',
                     path: path.resolve(__dirname, "../Utils/img/Rev_Performance_Header.png"),

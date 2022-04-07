@@ -227,15 +227,17 @@ function sendRunTemplate(runID, firstName, lastName) {
     </html>`
 }
 
-const validMimeTypes = [`text/x-csv`,
-    `application/vnd.ms-excel`,
-    `application/csv`,
-    `application/x-csv`,
-    `text/csv`,
-    `text/comma-separated-values`,
-    `text/x-comma-separated-values`]
-
+/**
+ * This checks if a file (when uploading a run) is a valid file 
+ */
 function isValidMimeType(type) {
+    const validMimeTypes = [`text/x-csv`,
+        `application/vnd.ms-excel`,
+        `application/csv`,
+        `application/x-csv`,
+        `text/csv`,
+        `text/comma-separated-values`,
+        `text/x-comma-separated-values`]
     if (validMimeTypes.includes(type)) {
         return true;
     }
