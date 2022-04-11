@@ -159,6 +159,19 @@ function getUserByUserID(userID) {
     })
 }
 
+function updatePassword(userID, password) {
+    return new Promise(async (resolve, reject) => {
+        const values = [userID, password];
+        const query = `UPDATE public.user SET pswd = $2 WHERE user_id = $1;`;
+        try {
+            return resolve(await pool.query(query, values))
+        } catch (error) {
+            console.log(`Error in getting user in ${FILE_NAME}: ${error}`)
+            return reject(error);
+        }
+    })
+}
+
 module.exports = {
     getUser,
     createUser,
@@ -168,4 +181,5 @@ module.exports = {
     resetPassword,
     getAllUsers,
     getUserByUserID,
+    updatePassword
 }

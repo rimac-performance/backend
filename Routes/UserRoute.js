@@ -125,4 +125,27 @@ router.get("/", authenticateJWT, (req, res) => {
     }
 })
 
+/**
+ * Update a user's password
+ */
+router.put("/password", authenticateJWT, Validations.validatePassword, (req,res) => {
+    const responseObj = {};
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors)
+        return sendErrorResponse(res, errors);
+    } else {
+        const userID = req.body.user.user_id;
+        const password = req.body.pswd;
+        userService.updatePassword(userID, password).then(result => {
+            console.log(`Success updating users password at ${FILE_NAME}`);
+            return res.send(result);
+        }).catch(err => {
+            console.log(`Error updating users password at: ${FILE_NAME} ${err}`);
+            const errorInfo = ErrorUtils.getErrorInfo(err.code);
+            return ErrorUtils.sendResponse(res, responseObj, errorInfo);
+        })
+    }
+})
+
 module.exports = router;

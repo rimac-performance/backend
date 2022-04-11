@@ -213,10 +213,26 @@ function viewUsers(userID, role) {
     })
 }
 
+function updatePassword(userID, password) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const salt = await bcrypt.genSalt(saltRounds);
+            const hash = await bcrypt.hash(password, salt);
+            await userDAO.updatePassword(userID, hash)
+            return resolve({message: CONSTANTS.ERROR_DESC.SUCCESS})
+        } catch (error) {
+            console.log(`Error updating users' password at: ${FILE_NAME} ${error}`)
+            responseObj.code = CONSTANTS.APP_ERROR_CODE.UNKNOWN_ERROR;
+            return reject(responseObj)
+        }
+    })
+}
+
 module.exports = {
     login,
     register,
     forgot,
     resetPassword,
-    viewUsers
+    viewUsers,
+    updatePassword
 }
