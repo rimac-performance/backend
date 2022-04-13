@@ -8,7 +8,7 @@ const Validations = require("../Utils/Validations");
 const authenticateJWT = require("../Utils/Utils").authenticateJWT;
 const sensorService = require("../Services/SensorService")
 
-router.get("/status", authenticateJWT, (req, res) => {
+router.get("/status", (req, res) => {
     sensorService.getStatus().then(result => {
         return res.send(result)
     }).catch(err => {
@@ -28,7 +28,7 @@ router.get("/threshold", (req, res) => {
     })
 })
 
-router.put("/status", Validations.validateSensorStatus, (req, res) => {
+router.put("/status", authenticateJWT, Validations.validateSensorStatus, (req, res) => {
     const responseObj = {};
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
